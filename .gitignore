@@ -28,13 +28,19 @@ cmake_install.cmake
 CTestTestfile.cmake
 Testing/
 
-# Qt / C++
-*_autogen/
+# Boost.Build (если bootstrap запущен не из каталога Boost)
+b2
+project-config.jam
+bin.v2/
+
 *.qmlls.ini
 .qtc_clangd/
 
 # Go binaries
 bin/
+
+# Release artifacts
+dist/
 
 # Qt / CMake build output (desktop)
 desktop/planer/build/

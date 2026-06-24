@@ -98,15 +98,17 @@ file "$QT_PREFIX/lib/libQt6Core.a"
 ```bash
 cd "$BOOST_SRC"
 
-./bootstrap.sh \
-    --prefix="$BOOST_ROOT" \
-    --with-libraries=filesystem,system,thread,program_options,regex
+./bootstrap.sh --prefix="$BOOST_ROOT"
 
 ./b2 -j"$(nproc)" \
     link=static \
     runtime-link=shared \
     variant=release \
     threading=multi \
+    --with-filesystem \
+    --with-thread \
+    --with-program_options \
+    --with-regex \
     install
 ```
 
@@ -131,6 +133,25 @@ make static-desktop-run
 ldd desktop/planer/build/static/appplaner | grep -i qt
 # libQt6*.so быть не должно
 ```
+
+## Упаковка .deb
+
+Скрипт [`scripts/static-deb.sh`](../scripts/static-deb.sh) собирает `.deb` из статического бинарника
+и QML-модуля `planer/` (нужен для `loadFromModule` при запуске вне каталога сборки).
+Бинарник ставится в `/usr/lib/planer/bin/planer`, QML — в `/usr/lib/planer/planer/`,
+в `/usr/bin/planer` — wrapper с `QML2_IMPORT_PATH`.
+
+Шаблоны упаковки: [`build/package/debian/`](../build/package/debian/).
+Готовый артефакт: `dist/planer-desktop_<version>_<arch>.deb`.
+
+```bash
+make static-desktop-deb
+sudo dpkg -i dist/planer-desktop_0.1_amd64.deb
+# при missing deps: sudo apt-get install -f
+planer
+```
+
+Собирайте `.deb` на целевом дистрибутиве — версии в `Depends` привязаны к системе сборки.
 
 ## Ссылки
 

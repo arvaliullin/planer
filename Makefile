@@ -162,3 +162,14 @@ static-verify: ## Проверить статические библиотеки
 .PHONY: static-desktop-run
 static-desktop-run: static-desktop ## Запустить statically-built desktop
 	QT_QPA_PLATFORM=xcb PLANER_API_URL=$(PLANER_API_URL) $(DESKTOP_STATIC_BUILD)/appplaner
+
+STATIC_DEB_SCRIPT ?= ./scripts/static-deb.sh
+DESKTOP_DEB_OUTPUT ?= dist
+DEB_PACKAGE_DIR ?= build/package/debian
+
+.PHONY: static-desktop-deb
+static-desktop-deb: static-desktop ## Собрать .deb для static desktop
+	DESKTOP_STATIC_BUILD=$(DESKTOP_STATIC_BUILD) \
+	DEB_OUTPUT_DIR=$(DESKTOP_DEB_OUTPUT) \
+	DEB_PACKAGE_DIR=$(DEB_PACKAGE_DIR) \
+	$(STATIC_DEB_SCRIPT)

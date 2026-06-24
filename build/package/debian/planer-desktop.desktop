@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Planer
+Comment=Planer desktop client
+Exec=planer
+Terminal=false
+Categories=Office;Utility;

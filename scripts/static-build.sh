@@ -164,9 +164,7 @@ cmd_boost() {
 
   if [[ ! -x "$BOOST_SRC/b2" ]] || [[ "$FORCE" == "1" ]]; then
     log "bootstrap Boost -> $BOOST_ROOT"
-    ./bootstrap.sh \
-      --prefix="$BOOST_ROOT" \
-      --with-libraries=filesystem,system,thread,program_options,regex
+    ./bootstrap.sh --prefix="$BOOST_ROOT"
   fi
 
   log "сборка Boost ($JOBS jobs)"
@@ -175,6 +173,10 @@ cmd_boost() {
     runtime-link=shared \
     variant=release \
     threading=multi \
+    --with-filesystem \
+    --with-thread \
+    --with-program_options \
+    --with-regex \
     install
 
   require_file "$BOOST_ROOT/lib/libboost_filesystem.a"
