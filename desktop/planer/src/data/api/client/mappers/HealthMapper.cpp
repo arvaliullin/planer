@@ -1,4 +1,4 @@
-#include "data/mappers/HealthMapper.hpp"
+#include "data/api/client/mappers/HealthMapper.hpp"
 
 namespace {
 

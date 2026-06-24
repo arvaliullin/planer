@@ -5,7 +5,6 @@
 #include <QObject>
 #include <QString>
 
-// HealthViewModel связывает SettingsPage с CheckHealthUseCase.
 class HealthViewModel : public QObject {
   Q_OBJECT
 

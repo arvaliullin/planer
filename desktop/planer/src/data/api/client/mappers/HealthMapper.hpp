@@ -1,6 +1,6 @@
 #pragma once
 
-#include "data/dto/HealthDto.hpp"
+#include "data/api/client/dto/HealthDto.hpp"
 #include "domain/entities/HealthStatus.hpp"
 
 namespace HealthMapper {

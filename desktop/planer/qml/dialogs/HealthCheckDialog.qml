@@ -3,46 +3,40 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import planer
 
-Page {
+Dialog {
     id: root
 
-    title: qsTr("Настройки")
+    title: qsTr("Проверка сервера")
+    modal: true
+    anchors.centerIn: parent
+    width: Math.min(parent.width - 48, 480)
 
-    readonly property var vm: healthViewModel
+    standardButtons: Dialog.Close
+
+    onRejected: app.closeHealthDialog()
+    onClosed: app.closeHealthDialog()
+
+    readonly property var vm: health
+
+    onOpened: {
+        if (vm) {
+            vm.checkHealth()
+        }
+    }
 
     ColumnLayout {
-        anchors.fill: parent
-        anchors.margins: 24
-        spacing: 16
-
-        Label {
-            text: qsTr("Подключение к серверу")
-            font.pixelSize: 20
-            font.bold: true
-        }
+        spacing: PlanerTheme.spacingMedium
+        width: parent.width
 
         RowLayout {
             Layout.fillWidth: true
-            spacing: 8
 
-            Label {
-                text: qsTr("API URL:")
-            }
+            Label { text: qsTr("API URL:") }
 
             TextField {
                 Layout.fillWidth: true
                 readOnly: true
                 text: vm ? vm.apiBaseUrl : ""
-            }
-        }
-
-        Button {
-            text: qsTr("Проверить сервер")
-            enabled: vm && !vm.loading
-            onClicked: {
-                if (vm) {
-                    vm.checkHealth()
-                }
             }
         }
 
@@ -55,7 +49,7 @@ Page {
             Layout.fillWidth: true
             visible: vm && vm.errorMessage.length > 0
             text: vm ? vm.errorMessage : ""
-            color: "#c62828"
+            color: palette.highlight
             wrapMode: Text.WordWrap
         }
 
@@ -84,10 +78,6 @@ Page {
                 isOk: vm ? vm.minioOk : false
                 errorText: vm ? vm.minioError : ""
             }
-        }
-
-        Item {
-            Layout.fillHeight: true
         }
     }
 }

@@ -3,12 +3,12 @@
 #include <functional>
 
 #include <QJsonObject>
+#include <QNetworkRequest>
 #include <QObject>
 #include <QUrl>
 
 class QNetworkReply;
 
-// HttpClient выполняет HTTP GET запросы.
 class HttpClient : public QObject {
   Q_OBJECT
 
@@ -19,13 +19,23 @@ public:
   explicit HttpClient(QObject *parent = nullptr);
 
   void get(const QUrl &url, SuccessHandler onSuccess, ErrorHandler onError);
+  void post(const QUrl &url, const QJsonObject &body, SuccessHandler onSuccess,
+            ErrorHandler onError);
+  void patch(const QUrl &url, const QJsonObject &body, SuccessHandler onSuccess,
+             ErrorHandler onError);
+  void deleteResource(const QUrl &url, SuccessHandler onSuccess,
+                      ErrorHandler onError);
+
+  void setAuthToken(const QString &token);
   void cancelAll();
 
 private:
-  void finishRequest(QNetworkReply *reply, SuccessHandler onSuccess,
-                     ErrorHandler onError);
+  QNetworkRequest authorizedRequest(const QUrl &url) const;
+  void sendRequest(QNetworkReply *reply, SuccessHandler onSuccess,
+                   ErrorHandler onError);
 
   class QNetworkAccessManager *networkManager_;
   QList<QNetworkReply *> activeReplies_;
+  QString authToken_;
   bool shuttingDown_ = false;
 };

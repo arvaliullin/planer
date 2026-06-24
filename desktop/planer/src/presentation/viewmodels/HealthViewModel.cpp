@@ -2,8 +2,8 @@
 
 #include "domain/entities/HealthStatus.hpp"
 
-HealthViewModel::HealthViewModel(CheckHealthUseCase &useCase,
-                                 QString apiBaseUrl, QObject *parent)
+HealthViewModel::HealthViewModel(CheckHealthUseCase &useCase, QString apiBaseUrl,
+                                 QObject *parent)
     : QObject(parent), useCase_(useCase), apiBaseUrl_(std::move(apiBaseUrl)) {}
 
 bool HealthViewModel::loading() const { return loading_; }
@@ -40,9 +40,9 @@ void HealthViewModel::checkHealth() {
         setLoading(false);
         applyStatus(status);
       },
-      [this](const QString &message) {
+      [this](const ApiError &error) {
         setLoading(false);
-        applyError(message);
+        applyError(error.userMessage());
       });
 }
 

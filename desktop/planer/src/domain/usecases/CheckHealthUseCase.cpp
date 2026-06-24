@@ -1,9 +1,8 @@
 #include "domain/usecases/CheckHealthUseCase.hpp"
 
-CheckHealthUseCase::CheckHealthUseCase(IHealthRepository &repository)
-    : repository_(repository) {}
+CheckHealthUseCase::CheckHealthUseCase(IPlanerApiClient &client) : client_(client) {}
 
 void CheckHealthUseCase::execute(std::function<void(HealthStatus)> onSuccess,
-                                 std::function<void(QString)> onError) {
-  repository_.checkHealth(std::move(onSuccess), std::move(onError));
+                                 std::function<void(ApiError)> onError) {
+  client_.checkHealth(std::move(onSuccess), std::move(onError));
 }

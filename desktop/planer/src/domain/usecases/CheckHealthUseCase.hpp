@@ -1,20 +1,19 @@
 #pragma once
 
 #include "domain/entities/HealthStatus.hpp"
-#include "domain/ports/IHealthRepository.hpp"
+#include "domain/ports/IPlanerApiClient.hpp"
+
+#include "core/ApiError.hpp"
 
 #include <functional>
 
-#include <QString>
-
-// CheckHealthUseCase запрашивает статус /health.
 class CheckHealthUseCase {
 public:
-  explicit CheckHealthUseCase(IHealthRepository &repository);
+  explicit CheckHealthUseCase(IPlanerApiClient &client);
 
   void execute(std::function<void(HealthStatus)> onSuccess,
-               std::function<void(QString)> onError);
+               std::function<void(ApiError)> onError);
 
 private:
-  IHealthRepository &repository_;
+  IPlanerApiClient &client_;
 };

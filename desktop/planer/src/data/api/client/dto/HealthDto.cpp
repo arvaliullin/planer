@@ -1,4 +1,4 @@
-#include "data/dto/HealthDto.hpp"
+#include "data/api/client/dto/HealthDto.hpp"
 
 namespace {
 
