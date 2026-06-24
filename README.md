@@ -39,4 +39,25 @@ make run          # planerd на хосте
 
 ## Desktop
 
-Qt6/QML приложение в `desktop/planer/`.
+Qt6/QML приложение в [`desktop/planer/`](desktop/planer/). Архитектура: domain / data / presentation.
+
+### Сборка
+
+Требуется Qt 6.2+ (Quick, QuickControls2, Network).
+
+```bash
+cd desktop/planer
+cmake -B build -DCMAKE_BUILD_TYPE=Debug
+cmake --build build
+./build/appplaner
+```
+
+### Настройки
+
+| Переменная | Описание | Default |
+|------------|----------|---------|
+| `PLANER_API_URL` | base URL planerd | `http://localhost:8080` |
+
+Приоритет: env -> QSettings -> default.
+
+Для проверки backend: запустить `make run`, открыть приложение, на экране **Настройки** нажать **Проверить сервер**.

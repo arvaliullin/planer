@@ -1,22 +1,22 @@
+#include "presentation/AppContext.hpp"
+
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QQuickStyle>
 
-int main(int argc, char *argv[])
-{
-    QGuiApplication app(argc, argv);
+int main(int argc, char *argv[]) {
+  QGuiApplication app(argc, argv);
 
-    QQmlApplicationEngine engine;
-    const QUrl url(QStringLiteral("qrc:/planer/main.qml"));
-    QObject::connect(
-        &engine,
-        &QQmlApplicationEngine::objectCreated,
-        &app,
-        [url](QObject *obj, const QUrl &objUrl) {
-            if (!obj && url == objUrl)
-                QCoreApplication::exit(-1);
-        },
-        Qt::QueuedConnection);
-    engine.load(url);
+  QQuickStyle::setStyle(QStringLiteral("Material"));
 
-    return app.exec();
+  QQmlApplicationEngine engine;
+  AppContext appContext;
+  appContext.registerContext(engine);
+
+  engine.loadFromModule(QStringLiteral("planer"), QStringLiteral("Main"));
+  if (engine.rootObjects().isEmpty()) {
+    return -1;
+  }
+
+  return app.exec();
 }
