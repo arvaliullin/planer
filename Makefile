@@ -124,3 +124,41 @@ dev: up-deps ## Backend + подсказка: make run и make desktop-qtc-run
 	@echo "Зависимости запущены. В отдельных терминалах:"
 	@echo "  make run"
 	@echo "  make desktop-qtc-run   # или make desktop-run, или Run в Qt Creator"
+
+# Static build (/mnt/dev/sources -> /mnt/dev/libs)
+STATIC_BUILD_SCRIPT ?= ./scripts/static-build.sh
+DEV_ROOT ?= /mnt/dev
+JOBS ?= $(shell nproc 2>/dev/null || echo 4)
+DESKTOP_STATIC_BUILD ?= $(DESKTOP_DIR)/build/static
+
+.PHONY: static-deps
+static-deps: ## APT-пакеты для статической сборки Qt/Boost
+	$(STATIC_BUILD_SCRIPT) deps
+
+.PHONY: static-dirs
+static-dirs: ## Создать каталоги /mnt/dev/{build,libs}
+	DEV_ROOT=$(DEV_ROOT) $(STATIC_BUILD_SCRIPT) dirs
+
+.PHONY: static-qt
+static-qt: ## Собрать и установить статический Qt в /mnt/dev/libs
+	DEV_ROOT=$(DEV_ROOT) JOBS=$(JOBS) $(STATIC_BUILD_SCRIPT) qt
+
+.PHONY: static-boost
+static-boost: ## Собрать и установить статический Boost в /mnt/dev/libs
+	DEV_ROOT=$(DEV_ROOT) JOBS=$(JOBS) $(STATIC_BUILD_SCRIPT) boost
+
+.PHONY: static-desktop
+static-desktop: ## Собрать desktop со статическим Qt
+	DEV_ROOT=$(DEV_ROOT) JOBS=$(JOBS) DESKTOP_STATIC_BUILD=$(DESKTOP_STATIC_BUILD) $(STATIC_BUILD_SCRIPT) desktop
+
+.PHONY: static-build
+static-build: ## Qt + Boost + desktop (static)
+	DEV_ROOT=$(DEV_ROOT) JOBS=$(JOBS) DESKTOP_STATIC_BUILD=$(DESKTOP_STATIC_BUILD) $(STATIC_BUILD_SCRIPT) all
+
+.PHONY: static-verify
+static-verify: ## Проверить статические библиотеки и desktop
+	DEV_ROOT=$(DEV_ROOT) DESKTOP_STATIC_BUILD=$(DESKTOP_STATIC_BUILD) $(STATIC_BUILD_SCRIPT) verify
+
+.PHONY: static-desktop-run
+static-desktop-run: static-desktop ## Запустить statically-built desktop
+	QT_QPA_PLATFORM=xcb PLANER_API_URL=$(PLANER_API_URL) $(DESKTOP_STATIC_BUILD)/appplaner

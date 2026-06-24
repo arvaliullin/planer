@@ -44,6 +44,22 @@ target_link_libraries(appplaner
         Qt6::Network
 )
 
+if(TARGET Qt6::Core)
+    get_target_property(_qt6_core_location Qt6::Core IMPORTED_LOCATION)
+    if(NOT _qt6_core_location)
+        get_target_property(_qt6_core_location Qt6::Core IMPORTED_LOCATION_RELEASE)
+    endif()
+    if(_qt6_core_location AND _qt6_core_location MATCHES "\\.a$")
+        target_compile_definitions(appplaner PRIVATE PLANER_QT_STATIC)
+        qt_import_qml_plugins(appplaner)
+        qt6_import_plugins(appplaner
+            INCLUDE_BY_TYPE platforms Qt::QXcbIntegrationPlugin
+            INCLUDE_BY_TYPE xcbglintegrations Qt::QXcbEglIntegrationPlugin
+            INCLUDE_BY_TYPE imageformats Qt::QSvgPlugin
+        )
+    endif()
+endif()
+
 set_target_properties(appplaner PROPERTIES
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}

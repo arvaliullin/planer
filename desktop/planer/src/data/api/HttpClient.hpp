@@ -19,10 +19,13 @@ public:
   explicit HttpClient(QObject *parent = nullptr);
 
   void get(const QUrl &url, SuccessHandler onSuccess, ErrorHandler onError);
+  void cancelAll();
 
 private:
   void finishRequest(QNetworkReply *reply, SuccessHandler onSuccess,
                      ErrorHandler onError);
 
   class QNetworkAccessManager *networkManager_;
+  QList<QNetworkReply *> activeReplies_;
+  bool shuttingDown_ = false;
 };

@@ -17,7 +17,12 @@ HttpClient::HttpClient(QObject *parent)
 
 void HttpClient::get(const QUrl &url, SuccessHandler onSuccess,
                      ErrorHandler onError) {
+  if (shuttingDown_) {
+    return;
+  }
+
   QNetworkReply *reply = networkManager_->get(QNetworkRequest(url));
+  activeReplies_.append(reply);
 
   auto *timer = new QTimer(reply);
   timer->setSingleShot(true);
@@ -36,9 +41,29 @@ void HttpClient::get(const QUrl &url, SuccessHandler onSuccess,
           });
 }
 
+void HttpClient::cancelAll() {
+  if (shuttingDown_) {
+    return;
+  }
+
+  shuttingDown_ = true;
+
+  const auto replies = activeReplies_;
+  for (QNetworkReply *reply : replies) {
+    if (reply->isRunning()) {
+      reply->abort();
+    }
+  }
+}
+
 void HttpClient::finishRequest(QNetworkReply *reply, SuccessHandler onSuccess,
                                ErrorHandler onError) {
+  activeReplies_.removeAll(reply);
   reply->deleteLater();
+
+  if (shuttingDown_) {
+    return;
+  }
 
   if (reply->error() != QNetworkReply::NoError) {
     onError(QStringLiteral("Не удалось связаться с сервером"));

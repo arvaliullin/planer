@@ -8,6 +8,8 @@ Page {
 
     title: qsTr("Настройки")
 
+    readonly property var vm: healthViewModel
+
     ColumnLayout {
         anchors.fill: parent
         anchors.margins: 24
@@ -30,32 +32,36 @@ Page {
             TextField {
                 Layout.fillWidth: true
                 readOnly: true
-                text: healthViewModel.apiBaseUrl
+                text: vm ? vm.apiBaseUrl : ""
             }
         }
 
         Button {
             text: qsTr("Проверить сервер")
-            enabled: !healthViewModel.loading
-            onClicked: healthViewModel.checkHealth()
+            enabled: vm && !vm.loading
+            onClicked: {
+                if (vm) {
+                    vm.checkHealth()
+                }
+            }
         }
 
         BusyIndicator {
-            visible: healthViewModel.loading
-            running: healthViewModel.loading
+            visible: vm && vm.loading
+            running: vm && vm.loading
         }
 
         Label {
             Layout.fillWidth: true
-            visible: healthViewModel.errorMessage.length > 0
-            text: healthViewModel.errorMessage
+            visible: vm && vm.errorMessage.length > 0
+            text: vm ? vm.errorMessage : ""
             color: "#c62828"
             wrapMode: Text.WordWrap
         }
 
         ColumnLayout {
             Layout.fillWidth: true
-            visible: healthViewModel.hasResult
+            visible: vm && vm.hasResult
             spacing: 8
 
             Label {
@@ -65,18 +71,18 @@ Page {
 
             ComponentStatusRow {
                 Layout.fillWidth: true
-                visible: healthViewModel.postgresPresent
+                visible: vm && vm.postgresPresent
                 componentName: qsTr("PostgreSQL")
-                isOk: healthViewModel.postgresOk
-                errorText: healthViewModel.postgresError
+                isOk: vm ? vm.postgresOk : false
+                errorText: vm ? vm.postgresError : ""
             }
 
             ComponentStatusRow {
                 Layout.fillWidth: true
-                visible: healthViewModel.minioPresent
+                visible: vm && vm.minioPresent
                 componentName: qsTr("MinIO")
-                isOk: healthViewModel.minioOk
-                errorText: healthViewModel.minioError
+                isOk: vm ? vm.minioOk : false
+                errorText: vm ? vm.minioError : ""
             }
         }
 

@@ -5,18 +5,24 @@
 #include "domain/usecases/CheckHealthUseCase.hpp"
 #include "presentation/viewmodels/HealthViewModel.hpp"
 
-#include <QQmlApplicationEngine>
+#include <QObject>
+
+class QQmlApplicationEngine;
 
 // AppContext собирает зависимости desktop-клиента.
-class AppContext {
+class AppContext : public QObject {
+  Q_OBJECT
+
 public:
-  AppContext();
+  explicit AppContext(QObject *parent = nullptr);
 
   void registerContext(QQmlApplicationEngine &engine);
+  void shutdown();
 
 private:
   HttpClient httpClient_;
   HealthRepository healthRepository_;
   CheckHealthUseCase checkHealthUseCase_;
   HealthViewModel healthViewModel_;
+  bool shuttingDown_ = false;
 };
