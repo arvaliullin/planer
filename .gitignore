@@ -25,7 +25,6 @@ go.work.sum
 CMakeCache.txt
 CMakeFiles/
 cmake_install.cmake
-Makefile
 CTestTestfile.cmake
 Testing/
 
@@ -34,8 +33,12 @@ Testing/
 *.qmlls.ini
 .qtc_clangd/
 
-# Desktop build output (Qt Creator: Desktop-Debug, Desktop-Release, etc.)
-build/
+# Go binaries
+bin/
+
+# Qt / CMake build output (desktop)
+desktop/planer/build/
+desktop/planer/Desktop-*/
 out/
 
 # Qt Creator (user-specific)
@@ -44,5 +47,6 @@ out/
 *.user.*
 
 # Editor/IDE
+.cursor/
 # .idea/
 # .vscode/

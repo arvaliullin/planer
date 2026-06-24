@@ -1,0 +1,41 @@
+basePath: /
+definitions:
+  dto.ComponentStatus:
+    properties:
+      error:
+        type: string
+      ok:
+        type: boolean
+    type: object
+  dto.HealthResponse:
+    properties:
+      minio:
+        $ref: '#/definitions/dto.ComponentStatus'
+      postgres:
+        $ref: '#/definitions/dto.ComponentStatus'
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: HTTP API сервиса planer
+  title: Planer API
+  version: "1.0"
+paths:
+  /health:
+    get:
+      description: Статус подключения к postgres и minio.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.HealthResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/dto.HealthResponse'
+      summary: Проверка готовности
+      tags:
+      - health
+swagger: "2.0"
