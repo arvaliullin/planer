@@ -61,3 +61,16 @@ cmake --build build
 Приоритет: env -> QSettings -> default.
 
 Для проверки backend: запустить `make run`, открыть приложение, на экране **Настройки** нажать **Проверить сервер**.
+
+
+```bash
+export ATHENS_STORAGE=/mnt/dev/athens-storage
+mkdir -p $ATHENS_STORAGE
+docker run -d -v $ATHENS_STORAGE:/var/lib/athens \
+   -e ATHENS_DISK_STORAGE_ROOT=/var/lib/athens \
+   -e ATHENS_STORAGE_TYPE=disk \
+   --name athens-proxy \
+   --restart always \
+   -p 3001:3000 \
+   gomods/athens:latest
+```
